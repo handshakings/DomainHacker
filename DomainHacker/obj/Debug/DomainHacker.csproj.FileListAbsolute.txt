@@ -1,0 +1,10 @@
+E:\DomainHacker\DomainHacker\bin\Debug\DomainHacker.exe.config
+E:\DomainHacker\DomainHacker\bin\Debug\DomainHacker.exe
+E:\DomainHacker\DomainHacker\bin\Debug\DomainHacker.pdb
+E:\DomainHacker\DomainHacker\bin\Debug\WebDriver.dll
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.csproj.AssemblyReference.cache
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.csproj.SuggestedBindingRedirects.cache
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.csproj.CoreCompileInputs.cache
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.csproj.CopyComplete
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.exe
+E:\DomainHacker\DomainHacker\obj\Debug\DomainHacker.pdb
