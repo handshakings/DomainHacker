@@ -15,7 +15,12 @@
       "ProjectGuid": "3457a57e-a768-42b5-937f-c97899d94f93",
       "DisplayName": "Solution Items",
       "ColorIndex": 1
+    },
+    "0e5b26f2-eb7c-4bbb-bd99-4ce54f165263": {
+      "ProjectGuid": "0e5b26f2-eb7c-4bbb-bd99-4ce54f165263",
+      "DisplayName": "UrlFinder",
+      "ColorIndex": 2
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 3
 }

