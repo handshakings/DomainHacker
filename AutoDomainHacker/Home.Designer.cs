@@ -1,4 +1,4 @@
-﻿namespace AutoDomainHacker
+﻿namespace ADH
 {
     partial class Home
     {

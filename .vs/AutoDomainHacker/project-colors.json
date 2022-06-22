@@ -20,7 +20,12 @@
       "ProjectGuid": "0e5b26f2-eb7c-4bbb-bd99-4ce54f165263",
       "DisplayName": "AutoDomainHacker",
       "ColorIndex": 2
+    },
+    "989be07a-a683-4f39-a9ed-9bd5130f7ac8": {
+      "ProjectGuid": "989be07a-a683-4f39-a9ed-9bd5130f7ac8",
+      "DisplayName": "ADH",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 3
+  "NextColorIndex": 4
 }

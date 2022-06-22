@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace AutoDomainHacker
+namespace ADH
 {
     internal static class Program
     {

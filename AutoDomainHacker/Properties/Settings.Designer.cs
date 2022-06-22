@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AutoDomainHacker.Properties {
+namespace ADH.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

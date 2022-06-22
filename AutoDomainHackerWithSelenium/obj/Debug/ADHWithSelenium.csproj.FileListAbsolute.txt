@@ -1,0 +1,13 @@
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ADHWithSelenium.exe.config
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ADHWithSelenium.exe
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ADHWithSelenium.pdb
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\WebDriver.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.SuggestedBindingRedirects.cache
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.Home.resources
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.Properties.Resources.resources
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.GenerateResource.cache
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.CoreCompileInputs.cache
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.CopyComplete
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.exe
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.pdb
+E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.AssemblyReference.cache
