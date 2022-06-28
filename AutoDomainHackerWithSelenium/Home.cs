@@ -241,11 +241,8 @@ namespace ADHWithSelenium
                     Login(firefoxDriver, loginUrl, payload);
                     myDelegate.DynamicInvoke(domain, "Logged In","");
 
-                    List<string> urls = FindAllUrls(chromeDriver, firefoxDriver, domain).Distinct().ToList();
-                    myDelegate.DynamicInvoke(domain, "Removing duplicate URLs","");
-                    Thread.Sleep(3000);
-                    myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
-                    Thread.Sleep(3000);
+                    List<string> urls = FindAllUrls(chromeDriver, firefoxDriver, domain);
+                    
                     Invoke(new Action(() => {
                         ListViewItem item = new ListViewItem();
                         item.Text = domain;
@@ -273,6 +270,11 @@ namespace ADHWithSelenium
                         myDelegate.DynamicInvoke(url, "Finding Upload Points", (urlCounter + 1).ToString() + "/" + urls.Count.ToString());
                         if (urlCounter % 2 == 0)
                         {
+                            if(urlCounter % 20 == 0 && urlCounter >= 20)
+                            {
+                                Invoke(new Action(() => label10.Text = "10 Seconds Pause .... "));
+                                Thread.Sleep(10000);
+                            }
                             //chrome
                             try
                             {                             
@@ -412,7 +414,7 @@ namespace ADHWithSelenium
             MyDelegate myDelegate = new MyDelegate(UpdateLabel);
             Thread.Sleep(5000);
             var links = firefoxDriver.FindElements(By.TagName("a"));
-            while(links.Count == 0)
+            while (links.Count == 0)
             {
                 Thread.Sleep(5000);
                 links = firefoxDriver.FindElements(By.TagName("a"));
@@ -420,31 +422,49 @@ namespace ADHWithSelenium
             //Websire Creawl level 1
             foreach (var link in links)
             {
-                string l = link.GetAttribute("href");
-                var href = l.Contains("#") ? l : l.Replace("#","");
+                string l = link.GetAttribute("href").ToLower();
+                var href = l.Contains("#") ? l : l.Replace("#", "");
                 href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
-                if (href != domain && !href.Contains("logout") && !href.Contains("signout") && !href.Contains("login"))
+
+                string[] filterKeywords = label13.Text.Split(',');
+                bool skipUrl = false;
+                foreach (string keyword in filterKeywords)
+                {
+                    if (href.Contains(keyword.Trim()))
+                    {
+                        skipUrl = true;
+                    }
+                }
+
+                if (href != domain && !skipUrl)
                 {
                     bool isAlreadyExist = false;
-                    foreach(string url in urls)
+                    foreach (string url in urls)
                     {
-                        if(url == href)
+                        if (url == href)
                         {
                             isAlreadyExist = true;
                             break;
                         }
-                    }  
-                    if(!isAlreadyExist)
+                    }
+                    if (!isAlreadyExist)
                     {
                         urls.Add(href);
                         myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
                     }
                 }
             }
+
+            myDelegate.DynamicInvoke(domain, "Removing duplicate URLs", "");
+            Thread.Sleep(3000);
+            urls = urls.Distinct().ToList();
+            myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+            Thread.Sleep(3000);
+
             //Website Crawl Level 2
             int websiteCrawlLevel = 0;
             Invoke(new Action(() => websiteCrawlLevel = int.Parse(comboBox4.Text)));
-            if(websiteCrawlLevel == 2)
+            if (websiteCrawlLevel > 1)
             {
                 int urlsAtHomeCount = urls.Count();
                 int count = 0;
@@ -465,6 +485,16 @@ namespace ADHWithSelenium
                     count++;
                 }
             }
+
+            if (websiteCrawlLevel > 1)
+            {
+                myDelegate.DynamicInvoke(domain, "Removing duplicate URLs", "");
+                Thread.Sleep(3000);
+                urls = urls.Distinct().ToList();
+                myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+                Thread.Sleep(3000);
+            }
+
             //Website Crawl Level 3
             int websiteCrawlLevel3 = 0;
             Invoke(new Action(() => websiteCrawlLevel3 = int.Parse(comboBox4.Text)));
@@ -489,6 +519,15 @@ namespace ADHWithSelenium
                     count3++;
                 }
             }
+            if (websiteCrawlLevel == 3)
+            {
+                myDelegate.DynamicInvoke(domain, "Removing duplicate URLs", "");
+                Thread.Sleep(3000);
+                urls = urls.Distinct().ToList();
+                myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+                Thread.Sleep(3000);
+            }
+
             return urls;
         }
         private List<string> FindDeepUrls(IWebDriver driver, string domain, string currentUrl)
@@ -498,12 +537,23 @@ namespace ADHWithSelenium
             var links = driver.FindElements(By.TagName("a"));
             foreach (var link in links)
             {
-                string l = link.GetAttribute("href");
+                string l = link.GetAttribute("href").ToLower();
                 if(l != null)
                 {
                     var href = l.Contains("#") ? l : l.Replace("#", "");
                     href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
-                    if (href != domain && !href.Contains("logout") && !href.Contains("signout") && !href.Contains("login"))
+
+                    string[] filterKeywords = label13.Text.Split(',');
+                    bool skipUrl = false;
+                    foreach (string keyword in filterKeywords)
+                    {
+                        if (href.Contains(keyword.Trim()))
+                        {
+                            skipUrl = true;
+                        }
+                    }
+
+                    if (href != domain && !skipUrl)
                     {
                         bool isAlreadyExist = false;
                         foreach (string url in urls)
@@ -581,6 +631,7 @@ namespace ADHWithSelenium
             Label label = (((Button)sender).Name == button4.Name) ? label4 :
                                 (((Button)sender).Name == button6.Name) ? label5 :
                                 (((Button)sender).Name == button9.Name) ? label8 :
+                                (((Button)sender).Name == button13.Name) ? label13 :
                                 null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             DialogResult dialogResult = openFileDialog.ShowDialog();
@@ -588,6 +639,10 @@ namespace ADHWithSelenium
             {
                 string fileName = openFileDialog.FileName;
                 label.Text = fileName;
+                if(((Button)sender).Name == button13.Name)
+                {
+                    label.Text = File.ReadAllText(fileName).ToLower();
+                }
             }
         }
 
