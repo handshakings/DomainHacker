@@ -132,6 +132,7 @@ namespace ADH
         private void Form1_Load(object sender, EventArgs e)
         {
             string apiKey = "AIzaSyATqgfNiFlONRH7LJ9nJievRLXWfO917r0";
+            //https://cse.google.com/all    Get Cx
             string cx = "de291e86fb9d1f014";
             string q = "inurl:\" /login.php \" intext:admin";
             string lg = "in";

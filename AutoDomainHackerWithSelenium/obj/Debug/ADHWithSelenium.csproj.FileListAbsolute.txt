@@ -10,4 +10,16 @@ E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.Co
 E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.CopyComplete
 E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.exe
 E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.pdb
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\Newtonsoft.Json.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\Newtonsoft.Json.xml
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\AngleSharp.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ICSharpCode.SharpZipLib.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\Microsoft.Win32.Registry.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\System.Buffers.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\System.Text.Encoding.CodePages.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\WebDriverManager.dll
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\AngleSharp.xml
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ICSharpCode.SharpZipLib.pdb
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\ICSharpCode.SharpZipLib.xml
+E:\DomainHacker\AutoDomainHackerWithSelenium\bin\Debug\System.Buffers.xml
 E:\DomainHacker\AutoDomainHackerWithSelenium\obj\Debug\ADHWithSelenium.csproj.AssemblyReference.cache
