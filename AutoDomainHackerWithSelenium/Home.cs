@@ -18,6 +18,7 @@ namespace ADHWithSelenium
         bool isStop = false;
         Random random = new Random();
         public delegate void MyDelegate(string url, string msg, string progress);
+        public delegate void MyDelegate1(string progress);
         private void UpdateLabel(string url, string msg, string progress)
         {
             Invoke(new Action(() => {
@@ -25,6 +26,11 @@ namespace ADHWithSelenium
                 label11.Text = (msg != "") ? msg : label11.Text;
                 label12.Text = (progress != "") ? progress : label12.Text;
             })); 
+        }
+        private void UpdateLabel1(string progress)
+        {
+            Invoke(new Action(() => label14.Text += progress));
+            
         }
         public Home()
         {
@@ -224,6 +230,7 @@ namespace ADHWithSelenium
 
                 foreach (string data in domains)
                 {
+                    Invoke(new Action(() => label14.Text = ""));
                     if (isStop)
                     {
                         chromeDriver.Dispose();
@@ -235,11 +242,11 @@ namespace ADHWithSelenium
                     string domain = uri.Scheme + "://" + uri.Host;
                     string loginUrl = line[0].Trim();
                     string payload = line[1].Trim().Split('|')[0];
-                    myDelegate.DynamicInvoke(domain, "Logging In","");
+                    myDelegate.DynamicInvoke(domain, "Trying to Login","");
                     Login(chromeDriver, loginUrl, payload);
                     string homePage = (FindUploadPointAtHomePage(chromeDriver)) ? chromeDriver.Url : null;
                     Login(firefoxDriver, loginUrl, payload);
-                    myDelegate.DynamicInvoke(domain, "Logged In","");
+                    myDelegate.DynamicInvoke(domain, "Login Successful","");
 
                     List<string> urls = FindAllUrls(chromeDriver, firefoxDriver, domain);
                     
@@ -412,6 +419,8 @@ namespace ADHWithSelenium
             //Find all admin urls
             List<string> urls = new List<string>();
             MyDelegate myDelegate = new MyDelegate(UpdateLabel);
+            MyDelegate1 myDelegate1 = new MyDelegate1(UpdateLabel1);
+            
             Thread.Sleep(5000);
             var links = firefoxDriver.FindElements(By.TagName("a"));
             while (links.Count == 0)
@@ -450,15 +459,17 @@ namespace ADHWithSelenium
                     if (!isAlreadyExist)
                     {
                         urls.Add(href);
-                        myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                        myDelegate.DynamicInvoke(domain, "Finding Admin URLs (Level 1)", urls.Count.ToString());
                     }
                 }
             }
-
+            
             myDelegate.DynamicInvoke(domain, "Removing duplicate URLs", "");
             Thread.Sleep(3000);
             urls = urls.Distinct().ToList();
             myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+            int levelUrls = urls.Count();
+            myDelegate1.DynamicInvoke("Level 1 URLs :" + levelUrls.ToString());
             Thread.Sleep(3000);
 
             //Website Crawl Level 2
@@ -481,7 +492,7 @@ namespace ADHWithSelenium
                         urls.AddRange(FindDeepUrls(chromeDriver, domain, urls.ElementAt(count)));
                         switching++;
                     }
-                    myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                    myDelegate.DynamicInvoke(domain, "Finding Admin URLs (Level 2)", urls.Count.ToString());
                     count++;
                 }
             }
@@ -492,6 +503,9 @@ namespace ADHWithSelenium
                 Thread.Sleep(3000);
                 urls = urls.Distinct().ToList();
                 myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+                levelUrls = urls.Count() - levelUrls;
+                myDelegate1.DynamicInvoke("   Level 2 URLs :" + levelUrls.ToString());
+                levelUrls = urls.Count();
                 Thread.Sleep(3000);
             }
 
@@ -515,7 +529,7 @@ namespace ADHWithSelenium
                         urls.AddRange(FindDeepUrls(chromeDriver, domain, urls.ElementAt(count3)));
                         switching3++;
                     }
-                    myDelegate.DynamicInvoke(domain, "Found Admin URLs", urls.Count.ToString());
+                    myDelegate.DynamicInvoke(domain, "Finding Admin URLs (Level 3)", urls.Count.ToString());
                     count3++;
                 }
             }
@@ -525,6 +539,8 @@ namespace ADHWithSelenium
                 Thread.Sleep(3000);
                 urls = urls.Distinct().ToList();
                 myDelegate.DynamicInvoke(domain, "Unique URLs", urls.Count().ToString());
+                levelUrls = urls.Count() - levelUrls;
+                myDelegate1.DynamicInvoke("   Level 3 URLs :" + levelUrls.ToString());
                 Thread.Sleep(3000);
             }
 
@@ -534,43 +550,52 @@ namespace ADHWithSelenium
         {
             Navigate(driver, currentUrl);
             List<string> urls = new List<string>();
-            var links = driver.FindElements(By.TagName("a"));
-            foreach (var link in links)
+
+            try
             {
-                string l = link.GetAttribute("href").ToLower();
-                if(l != null)
+                var links = driver.FindElements(By.TagName("a"));
+                foreach (var link in links)
                 {
-                    var href = l.Contains("#") ? l : l.Replace("#", "");
-                    href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
-
-                    string[] filterKeywords = label13.Text.Split(',');
-                    bool skipUrl = false;
-                    foreach (string keyword in filterKeywords)
+                    string l = link.GetAttribute("href").ToLower();
+                    if (l != null)
                     {
-                        if (href.Contains(keyword.Trim()))
-                        {
-                            skipUrl = true;
-                        }
-                    }
+                        var href = l.Contains("#") ? l : l.Replace("#", "");
+                        href = (href.LastIndexOf('/') == href.Length - 1) ? href.Remove(href.LastIndexOf('/'), 1) : href;
 
-                    if (href != domain && !skipUrl)
-                    {
-                        bool isAlreadyExist = false;
-                        foreach (string url in urls)
+                        string[] filterKeywords = label13.Text.Split(',');
+                        bool skipUrl = false;
+                        foreach (string keyword in filterKeywords)
                         {
-                            if (url == href)
+                            if (href.Contains(keyword.Trim()))
                             {
-                                isAlreadyExist = true;
-                                break;
+                                skipUrl = true;
                             }
                         }
-                        if (!isAlreadyExist)
+
+                        if (href != domain && !skipUrl)
                         {
-                            urls.Add(href);
+                            bool isAlreadyExist = false;
+                            foreach (string url in urls)
+                            {
+                                if (url == href)
+                                {
+                                    isAlreadyExist = true;
+                                    break;
+                                }
+                            }
+                            if (!isAlreadyExist)
+                            {
+                                urls.Add(href);
+                            }
                         }
                     }
-                }  
+                }
             }
+            catch (Exception)
+            {
+
+            }
+           
             return urls;
         }
 

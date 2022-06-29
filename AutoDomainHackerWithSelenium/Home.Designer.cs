@@ -79,6 +79,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -171,7 +172,7 @@
             this.listView1.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(9, 131);
+            this.listView1.Location = new System.Drawing.Point(8, 131);
             this.listView1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(824, 232);
@@ -189,7 +190,7 @@
             this.button2.BackColor = System.Drawing.Color.Lime;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(449, 373);
+            this.button2.Location = new System.Drawing.Point(448, 373);
             this.button2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(218, 32);
@@ -203,7 +204,7 @@
             this.button3.BackColor = System.Drawing.Color.Lime;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.ForeColor = System.Drawing.Color.Black;
-            this.button3.Location = new System.Drawing.Point(687, 373);
+            this.button3.Location = new System.Drawing.Point(686, 373);
             this.button3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(146, 32);
@@ -254,7 +255,7 @@
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.ForeColor = System.Drawing.Color.Lime;
-            this.groupBox1.Location = new System.Drawing.Point(9, 7);
+            this.groupBox1.Location = new System.Drawing.Point(8, 7);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
@@ -311,7 +312,7 @@
             this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button10.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button10.ForeColor = System.Drawing.Color.Black;
-            this.button10.Location = new System.Drawing.Point(692, 371);
+            this.button10.Location = new System.Drawing.Point(691, 371);
             this.button10.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(141, 32);
@@ -331,7 +332,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.ForeColor = System.Drawing.Color.Lime;
-            this.groupBox2.Location = new System.Drawing.Point(10, 7);
+            this.groupBox2.Location = new System.Drawing.Point(9, 7);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(823, 96);
             this.groupBox2.TabIndex = 13;
@@ -426,8 +427,8 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.Yellow;
+            this.label5.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.Silver;
             this.label5.Location = new System.Drawing.Point(406, 27);
             this.label5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label5.Name = "label5";
@@ -438,8 +439,8 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
-            this.label4.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.Yellow;
+            this.label4.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.Silver;
             this.label4.Location = new System.Drawing.Point(170, 27);
             this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label4.Name = "label4";
@@ -452,7 +453,7 @@
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button7.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button7.ForeColor = System.Drawing.Color.Black;
-            this.button7.Location = new System.Drawing.Point(514, 371);
+            this.button7.Location = new System.Drawing.Point(513, 371);
             this.button7.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(159, 32);
@@ -472,7 +473,7 @@
             this.listView2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView2.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(10, 110);
+            this.listView2.Location = new System.Drawing.Point(9, 110);
             this.listView2.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(823, 253);
@@ -513,7 +514,7 @@
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.SystemColors.Control;
-            this.label13.Location = new System.Drawing.Point(122, 381);
+            this.label13.Location = new System.Drawing.Point(121, 381);
             this.label13.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(0, 16);
@@ -525,7 +526,7 @@
             this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button13.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button13.ForeColor = System.Drawing.Color.White;
-            this.button13.Location = new System.Drawing.Point(10, 372);
+            this.button13.Location = new System.Drawing.Point(9, 372);
             this.button13.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(111, 32);
@@ -540,7 +541,7 @@
             this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button12.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button12.ForeColor = System.Drawing.Color.Black;
-            this.button12.Location = new System.Drawing.Point(669, 372);
+            this.button12.Location = new System.Drawing.Point(668, 372);
             this.button12.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(79, 32);
@@ -555,7 +556,7 @@
             this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button11.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button11.ForeColor = System.Drawing.Color.Black;
-            this.button11.Location = new System.Drawing.Point(758, 372);
+            this.button11.Location = new System.Drawing.Point(757, 372);
             this.button11.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(76, 32);
@@ -573,7 +574,7 @@
             this.groupBox3.Controls.Add(this.button8);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.ForeColor = System.Drawing.Color.Lime;
-            this.groupBox3.Location = new System.Drawing.Point(10, 7);
+            this.groupBox3.Location = new System.Drawing.Point(9, 7);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(824, 96);
             this.groupBox3.TabIndex = 12;
@@ -600,12 +601,12 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.Control;
-            this.label3.Location = new System.Drawing.Point(482, 19);
+            this.label3.Location = new System.Drawing.Point(532, 19);
             this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(169, 18);
+            this.label3.Size = new System.Drawing.Size(101, 18);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Website Crawl Level";
+            this.label3.Text = "Crawl Level";
             // 
             // comboBox4
             // 
@@ -617,7 +618,7 @@
             "3"});
             this.comboBox4.Location = new System.Drawing.Point(535, 51);
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(83, 26);
+            this.comboBox4.Size = new System.Drawing.Size(98, 26);
             this.comboBox4.TabIndex = 8;
             // 
             // button9
@@ -654,12 +655,12 @@
             // 
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("Arial Rounded MT Bold", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.ForeColor = System.Drawing.Color.Yellow;
+            this.label8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Silver;
             this.label8.Location = new System.Drawing.Point(130, 54);
             this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(0, 18);
+            this.label8.Size = new System.Drawing.Size(0, 16);
             this.label8.TabIndex = 7;
             // 
             // label9
@@ -687,7 +688,7 @@
             this.listView3.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.listView3.HideSelection = false;
             this.listView3.LabelEdit = true;
-            this.listView3.Location = new System.Drawing.Point(9, 110);
+            this.listView3.Location = new System.Drawing.Point(8, 110);
             this.listView3.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listView3.Name = "listView3";
             this.listView3.Size = new System.Drawing.Size(825, 254);
@@ -716,7 +717,7 @@
             this.label11.BackColor = System.Drawing.Color.Black;
             this.label11.Font = new System.Drawing.Font("Arial Rounded MT Bold", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.ForeColor = System.Drawing.Color.Silver;
-            this.label11.Location = new System.Drawing.Point(8, 58);
+            this.label11.Location = new System.Drawing.Point(8, 50);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(470, 30);
             this.label11.TabIndex = 14;
@@ -727,7 +728,7 @@
             this.label10.BackColor = System.Drawing.Color.Black;
             this.label10.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.LightSkyBlue;
-            this.label10.Location = new System.Drawing.Point(8, 15);
+            this.label10.Location = new System.Drawing.Point(8, 12);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(825, 22);
             this.label10.TabIndex = 13;
@@ -738,9 +739,9 @@
             this.label12.BackColor = System.Drawing.Color.Black;
             this.label12.Font = new System.Drawing.Font("Arial Rounded MT Bold", 60F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Lime;
-            this.label12.Location = new System.Drawing.Point(481, 485);
+            this.label12.Location = new System.Drawing.Point(492, 485);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(351, 89);
+            this.label12.Size = new System.Drawing.Size(340, 89);
             this.label12.TabIndex = 15;
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -748,12 +749,24 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Black;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.label10);
             this.panel1.Controls.Add(this.label11);
             this.panel1.Location = new System.Drawing.Point(-5, 446);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(848, 130);
             this.panel1.TabIndex = 16;
+            // 
+            // label14
+            // 
+            this.label14.BackColor = System.Drawing.Color.Black;
+            this.label14.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.Red;
+            this.label14.Location = new System.Drawing.Point(8, 94);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(483, 22);
+            this.label14.TabIndex = 15;
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Home
             // 
@@ -846,6 +859,7 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Label label14;
     }
 }
 
